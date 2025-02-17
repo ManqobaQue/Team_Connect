@@ -1,0 +1,132 @@
+﻿@model CompanyPhonebook.Models.DashboardViewModel
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<h2 class="mb-4">Dashboard</h2>
+
+<!-- 🔍 Search Form -->
+<form asp-action="Index" method="get" class="mb-4">
+    <div class="input-group">
+        <input type="text" name="searchQuery" class="form-control" placeholder="Search Departments or Users..."
+               value="@Context.Request.Query["searchQuery"]" />
+        <button type="submit" class="btn btn-primary">Search</button>
+    </div>
+</form>
+
+<!-- 📊 Summary Section -->
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h3 class="card-title">Summary</h3>
+                <p>Total Departments: <span class="badge bg-primary">@Model.TotalDepartments</span></p>
+                <p>Total Users: <span class="badge bg-success">@Model.TotalUsers</span></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 🏢 Departments Section -->
+<div class="mb-4">
+    <h3>Departments</h3>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Name</th>
+                    <th>Phone Extension</th>
+                    <th>Number of Users</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Departments.Any())
+                {
+                    var filteredDepartments = Model.Departments
+                    .Where(d => string.IsNullOrEmpty(Context.Request.Query["searchQuery"]) ||
+                    d.Name.Contains(Context.Request.Query["searchQuery"], StringComparison.OrdinalIgnoreCase))
+                    .ToList();
+
+                    if (filteredDepartments.Any())
+                    {
+                        @foreach (var department in filteredDepartments)
+                        {
+                            <tr>
+                                <td>@department.Name</td>
+                                <td>@department.PhoneExtension</td>
+                                <td><span class="badge bg-secondary">@department.Users.Count</span></td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="3" class="text-center text-muted">No departments found.</td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="3" class="text-center text-muted">No departments available.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- 👥 Users Section -->
+<div class="mb-4">
+    <h3>Users</h3>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead class="thead-dark">
+                <tr>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Email</th>
+                    <th>Department</th>
+                    <th>Extension Number</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Users.Any())
+                {
+                    var filteredUsers = Model.Users
+                    .Where(u => string.IsNullOrEmpty(Context.Request.Query["searchQuery"]) ||
+                    u.FirstName.Contains(Context.Request.Query["searchQuery"], StringComparison.OrdinalIgnoreCase) ||
+                    u.LastName.Contains(Context.Request.Query["searchQuery"], StringComparison.OrdinalIgnoreCase) ||
+                    (u.Department != null && u.Department.Name.Contains(Context.Request.Query["searchQuery"], StringComparison.OrdinalIgnoreCase)))
+                    .ToList();
+
+                    if (filteredUsers.Any())
+                    {
+                        @foreach (var user in filteredUsers)
+                        {
+                            <tr>
+                                <td>@user.FirstName</td>
+                                <td>@user.LastName</td>
+                                <td>@user.Email</td>
+                                <td>@(user.Department?.Name ?? "No Department")</td>
+                                <td>@user.ExtensionNumber</td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="5" class="text-center text-muted">No users found.</td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="5" class="text-center text-muted">No users available.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

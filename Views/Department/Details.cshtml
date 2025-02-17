@@ -1,0 +1,63 @@
+﻿@model CompanyPhonebook.Models.Department
+
+@{
+    ViewData["Title"] = "Department Details";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8">
+            <h2>Department Details</h2>
+            <hr />
+
+            <!-- Department information card -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h4>@Model.Name</h4>
+                </div>
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-3">Phone Extension</dt>
+                        <dd class="col-sm-9">@Model.PhoneExtension</dd>
+
+                        <dt class="col-sm-3">Number of Users</dt>
+                        <dd class="col-sm-9">@Model.Users.Count</dd>
+                    </dl>
+                </div>
+            </div>
+
+            <!-- Users in this department -->
+            @if (Model.Users.Any())
+            {
+                <h4>Associated Users</h4>
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Extension</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var user in Model.Users)
+                            {
+                                <tr>
+                                    <td>@user.FirstName @user.LastName</td>
+                                    <td>@user.Email</td>
+                                    <td>@user.ExtensionNumber</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+
+            <!-- Action buttons -->
+            <div class="mt-3">
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
+                <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+            </div>
+        </div>
+    </div>
+</div>

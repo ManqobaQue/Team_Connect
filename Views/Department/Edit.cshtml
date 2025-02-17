@@ -1,0 +1,69 @@
+﻿@model CompanyPhonebook.Models.Department
+
+@{
+    ViewData["Title"] = "Edit Department";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-6">
+            <h2>Edit Department</h2>
+            <hr />
+
+            <!-- The form uses a POST method and includes the ID as a hidden field -->
+            <form asp-action="Edit">
+                <!-- Hidden ID field is crucial for identifying which department to update -->
+                <input type="hidden" asp-for="Id" />
+
+                <!-- Validation Summary shows any model-level validation errors -->
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <!-- Name field with validation -->
+                <div class="mb-3">
+                    <label asp-for="Name" class="form-label"></label>
+                    <!-- The input's value is automatically populated with the department's current name -->
+                    <input asp-for="Name" class="form-control" />
+                    <!-- Display field-specific validation errors -->
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+
+                <!-- Phone Extension field with validation -->
+                <div class="mb-3">
+                    <label asp-for="PhoneExtension" class="form-label"></label>
+                    <input asp-for="PhoneExtension" class="form-control" />
+                    <span asp-validation-for="PhoneExtension" class="text-danger"></span>
+                </div>
+
+                <!-- Related Users information (read-only) -->
+                @if (Model.Users != null && Model.Users.Any())
+                {
+                    <div class="mb-3">
+                        <label class="form-label">Associated Users</label>
+                        <div class="card">
+                            <ul class="list-group list-group-flush">
+                                @foreach (var user in Model.Users)
+                                {
+                                    <li class="list-group-item">
+                                        @user.FirstName @user.LastName
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                }
+
+                <!-- Action buttons -->
+                <div class="mb-3">
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

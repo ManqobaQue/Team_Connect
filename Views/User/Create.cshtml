@@ -1,0 +1,83 @@
+﻿@model CompanyPhonebook.Models.User
+
+@{
+    ViewData["Title"] = "Create Employee";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-6">
+            <h2>Create Employee</h2>
+            <hr />
+
+            @if (ViewData["DebugInfo"] != null)
+            {
+                <div class="alert alert-info">
+                    <h5>Debug Information:</h5>
+                    <ul>
+                        @foreach (var info in (List<string>)(ViewData["DebugInfo"] ?? new List<string>()))
+                        {
+                            <li>@info</li>
+                        }
+                    </ul>
+                </div>
+            }
+
+            @if (ViewData["ValidationErrors"] != null)
+            {
+                <div class="alert alert-danger">
+                    <h5>Validation Errors:</h5>
+                    <ul>
+                        @foreach (var error in (List<string>)(ViewData["ValidationErrors"] ?? new List<string>()))
+                        {
+                            
+                                <li>@error</li>  
+                        }
+                    </ul>
+                </div>
+            }
+
+            <form asp-action="Create" id="createUserForm">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <div class="mb-3">
+                    <label asp-for="FirstName" class="form-label"></label>
+                    <input asp-for="FirstName" class="form-control" required />
+                    <span asp-validation-for="FirstName" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="LastName" class="form-label"></label>
+                    <input asp-for="LastName" class="form-control" required />
+                    <span asp-validation-for="LastName" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Email" class="form-label"></label>
+                    <input asp-for="Email" class="form-control" type="email" required />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label asp-for="DepartmentId" class="control-label">Department</label>
+                    <select asp-for="DepartmentId" class="form-control" asp-items="ViewBag.DepartmentId" required>
+                        <option value="">-- Select Department --</option>
+                    </select>
+                    <span asp-validation-for="DepartmentId" class="text-danger"></span>
+                </div>
+
+
+                <div class="mb-3">
+                    <label asp-for="ExtensionNumber" class="form-label"></label>
+                    <input asp-for="ExtensionNumber" class="form-control" required />
+                    <span asp-validation-for="ExtensionNumber" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <button type="submit" class="btn btn-primary" id="submitButton">Create</button>
+                    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

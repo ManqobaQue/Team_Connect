@@ -1,0 +1,45 @@
+﻿@model CompanyPhonebook.Models.Department
+
+@{
+    ViewData["Title"] = "Create Department";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-6">
+            <h2>Create Department</h2>
+            <hr />
+
+            <form asp-action="Create">
+                <!-- Validation Summary -->
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <!-- Name field -->
+                <div class="mb-3">
+                    <label asp-for="Name" class="form-label"></label>
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+
+                <!-- Phone Extension field -->
+                <div class="mb-3">
+                    <label asp-for="PhoneExtension" class="form-label"></label>
+                    <input asp-for="PhoneExtension" class="form-control" />
+                    <span asp-validation-for="PhoneExtension" class="text-danger"></span>
+                </div>
+
+                <!-- Form buttons -->
+                <div class="mb-3">
+                    <button type="submit" class="btn btn-primary">Create</button>
+                    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
