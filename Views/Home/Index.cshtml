@@ -2,7 +2,47 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container text-center mt-5">
+    <div class="row align-items-center">
+        <div class="col-md-6">
+            <h1 class="display-4 fw-bold text-primary">Welcome to Team Connect</h1>
+            <p class="lead text-dark">Your ultimate company phonebook for seamless team collaboration.</p>
+            <h2 class="lead text-dark">Communication made easy! ❤️</h2>
+
+            <div class="mt-4">
+                <a class="btn btn-primary btn-lg me-2" asp-controller="User" asp-action="Index">
+                    <i class="bi bi-people"></i> View Employees
+                </a>
+                <a class="btn btn-outline-secondary btn-lg btn-hover" asp-controller="Department" asp-action="Index">
+                    <i class="bi bi-building"></i> View Departments
+                </a>
+            </div>
+        </div>
+        <div class="col-md-6 d-none d-md-block">
+            <img src="https://betsoftware.com/wp-content/uploads/sites/4/2021/09/Home_Our-New-Home-1-1-1024x768.jpg"
+                 class="img-fluid rounded shadow-lg"
+                 alt="Team Collaboration Image">
+        </div>
+    </div>
+</div>
+
+<div class="container text-center mt-5">
+    <h3 class="fw-bold">Why Use Team Connect?</h3>
+    <div class="row mt-4">
+        <div class="col-md-4">
+            <i class="bi bi-search fs-1 text-primary mb-3"></i>
+            <h5 class="mt-3">Quick Search</h5>
+            <p>Find employees and departments instantly.</p>
+        </div>
+        <div class="col-md-4">
+            <i class="bi bi-bar-chart fs-1 text-success mb-3"></i>
+            <h5 class="mt-3">Dashboard Insights</h5>
+            <p>View employee statistics and department summaries.</p>
+        </div>
+        <div class="col-md-4">
+            <i class="bi bi-shield-check fs-1 text-warning mb-3"></i>
+            <h5 class="mt-3">Secure & Reliable</h5>
+            <p>Access company contacts safely with role-based access.</p>
+        </div>
+    </div>
 </div>

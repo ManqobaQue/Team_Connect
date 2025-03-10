@@ -4,6 +4,7 @@ using CompanyPhonebook.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CompanyPhonebook.Migrations
 {
     [DbContext(typeof(PhonebookContext))]
-    partial class PhonebookContextModelSnapshot : ModelSnapshot
+    [Migration("20250306160802_UpdatedLogIn")]
+    partial class UpdatedLogIn
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -197,6 +200,40 @@ namespace CompanyPhonebook.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "1",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "0ab2af2b-7a69-4d97-9b05-d8e405d90108",
+                            Email = "user1@example.com",
+                            EmailConfirmed = true,
+                            LockoutEnabled = false,
+                            NormalizedEmail = "USER1@EXAMPLE.COM",
+                            NormalizedUserName = "USER1@EXAMPLE.COM",
+                            PasswordHash = "AQAAAAIAAYagAAAAEI0rxhNJULqltz9CCOK1APt0tzhsDUdvvbkLpk8FlMDWlOm01a0aBcul8KLWjOBRCw==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "ad7566ef-143b-498f-ba3f-be5afdf4a10f",
+                            TwoFactorEnabled = false,
+                            UserName = "user1@example.com"
+                        },
+                        new
+                        {
+                            Id = "2",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "e6d59999-2b30-4abf-8f91-ca970ad9013d",
+                            Email = "user2@example.com",
+                            EmailConfirmed = true,
+                            LockoutEnabled = false,
+                            NormalizedEmail = "USER2@EXAMPLE.COM",
+                            NormalizedUserName = "USER2@EXAMPLE.COM",
+                            PasswordHash = "AQAAAAIAAYagAAAAEJhRNjK0QNWPmJ1eGjfVhFisDXVSG06LI2I7NPFW8ehUHI7KVn4WwKaGrwup0a9ZuQ==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "d6c3d2ee-703b-49a3-94ea-86a153e1e1a2",
+                            TwoFactorEnabled = false,
+                            UserName = "user2@example.com"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>

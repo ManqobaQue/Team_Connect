@@ -13,6 +13,7 @@ namespace CompanyPhonebook.Models
 
         [Required]
         [StringLength(20)]
+        [RegularExpression(@"^\d{5}$", ErrorMessage = "Extension must be exactly 5 digits.")]
         public string PhoneExtension { get; set; } = string.Empty;
 
         // Navigation property

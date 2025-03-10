@@ -2,18 +2,46 @@
     ViewData["Title"] = "Privacy Policy";
 }
 
-<h1>@ViewData["Title"]</h1>
+<div class="container">
+    <h1 class="mb-4">@ViewData["Title"]</h1>
 
-<p>This Privacy Policy describes how BET Software (referred to as "we," "us," or "our") collects, uses, and protects the personal information of employees and authorized users of the web application TeamConnect.</p>
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <p class="lead">
+                This Privacy Policy describes how <strong>BET Software</strong> (referred to as "we," "us," or "our") collects, uses,
+                and protects the personal information of employees and authorized users of the web application <strong>TeamConnect</strong>.
+            </p>
+        </div>
+    </div>
+    <!-- Information We Collect -->
+    <div class="card shadow-sm mt-4">
+        <div class="card-body">
+            <h2 class="card-title">Information We Collect</h2>
+            <p class="card-text">We collect the following employee information:</p>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">📛 Name</li>
+                <li class="list-group-item">💼 Job Title/Position</li>
+                <li class="list-group-item">🏢 Department</li>
+                <li class="list-group-item">📞 Work Phone Number(s)</li>
+                <li class="list-group-item">📧 Work Email Address</li>
+                <li class="list-group-item">🏠 Office Location/Building</li>
+            </ul>
+        </div>
+    </div>
+</div>
 
-<h2>Information We Collect</h2>
+@* <!-- Floating Back to Dashboard Button -->
+<a asp-action="Index" asp-controller="Dashboard" class="btn btn-primary fab">🏠 Back to Dashboard</a>
 
-<p>We collect the following employee information:</p>
-<ul>
-    <li>Name</li>
-    <li>Job Title/Position</li>
-    <li>Department</li>
-    <li>Work Phone Number(s)</li>
-    <li>Work Email Address</li>
-    <li>Office Location/Building</li>
- </ul>
+<!-- CSS for Floating Button -->
+<style>
+    .fab {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 1000;
+        padding: 10px 20px;
+        border-radius: 50px;
+        box-shadow: 2px 2px 10px rgba(0,0,0,0.3);
+    }
+</style> *@

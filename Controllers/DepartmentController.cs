@@ -2,17 +2,14 @@
 using Microsoft.EntityFrameworkCore;
 using CompanyPhonebook.Data;
 using CompanyPhonebook.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CompanyPhonebook.Controllers
 {
-    public class DepartmentController : Controller
+    [Authorize]
+    public class DepartmentController(PhonebookContext context) : Controller
     {
-        private readonly PhonebookContext _context;
-
-        public DepartmentController(PhonebookContext context)
-        {
-            _context = context;
-        }
+        private readonly PhonebookContext _context = context;
 
         //Search method includes related users count
         public async Task<IActionResult> Index(string searchQuery)
@@ -98,7 +95,7 @@ namespace CompanyPhonebook.Controllers
             if (department == null) return NotFound();
 
             // Check if department has users before allowing deletion
-            if (department.Users.Any())
+            if (department.Users.Count != 0)
             {
                 TempData["Error"] = "Cannot delete department with assigned users.";
                 return RedirectToAction(nameof(Index));
@@ -116,7 +113,7 @@ namespace CompanyPhonebook.Controllers
                 FirstOrDefaultAsync(d => d.Id == id);
 
             // Double-check for users before deletion
-            if (department?.Users != null && department.Users.Any())
+            if (department?.Users != null && department.Users.Count != 0)
             {
                 TempData["Error"] = "Cannot delete department with assigned users.";
                 return RedirectToAction(nameof(Index));

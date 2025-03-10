@@ -30,8 +30,7 @@ namespace CompanyPhonebook.Models
 
         [Required]
         [StringLength(20)]
+        [RegularExpression(@"^\d{4}$", ErrorMessage = "Extension must be exactly 4 digits.")]
         public string ExtensionNumber { get; set; } = string.Empty;
-
-        public ICollection<Contact> Contacts { get; set; } = new List<Contact>();
     }
 }

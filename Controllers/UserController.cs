@@ -4,17 +4,14 @@ using CompanyPhonebook.Data;
 using CompanyPhonebook.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Runtime.CompilerServices;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CompanyPhonebook.Controllers
 {
-    public class UserController : Controller
+    [Authorize]
+    public class UserController(PhonebookContext context) : Controller
     {
-        private readonly PhonebookContext _context;
-
-        public UserController(PhonebookContext context)
-        {
-            _context = context;
-        }
+        private readonly PhonebookContext _context = context;
 
         //List & search all Users
         //Allow searching by FirstName, LastName, or Email.
@@ -128,8 +125,7 @@ namespace CompanyPhonebook.Controllers
             if (id == null) return NotFound();
 
             var user = await _context.Users
-                .Include(u => u.Department)
-                .Include(u => u.Contacts)  // Include related contacts
+                .Include(u => u.Department)       
                 .FirstOrDefaultAsync(u => u.Id == id);
 
             if (user == null) return NotFound();

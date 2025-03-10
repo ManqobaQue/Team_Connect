@@ -7,7 +7,7 @@ namespace CompanyPhonebook.Models
     {
         public int TotalDepartments { get; set; }
         public int TotalUsers { get; set; }
-        public List<Department> Departments { get; set; }
-        public List<User> Users { get; set; }
+        public List<Department> Departments { get; set; } = [];
+        public List<User> Users { get; set; } = [];
     }
 }

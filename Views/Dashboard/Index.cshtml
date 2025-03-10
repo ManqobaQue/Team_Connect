@@ -1,6 +1,7 @@
 ﻿@model CompanyPhonebook.Models.DashboardViewModel
 @{
     ViewData["Title"] = "Dashboard";
+    var searchQuery = Context.Request.Query["searchQuery"];
 }
 
 <h2 class="mb-4">Dashboard</h2>
@@ -8,125 +9,181 @@
 <!-- 🔍 Search Form -->
 <form asp-action="Index" method="get" class="mb-4">
     <div class="input-group">
-        <input type="text" name="searchQuery" class="form-control" placeholder="Search Departments or Users..."
-               value="@Context.Request.Query["searchQuery"]" />
+        <input type="text" name="searchQuery" class="form-control" placeholder="Search Departments or Users..." value="@searchQuery" />
         <button type="submit" class="btn btn-primary">Search</button>
     </div>
 </form>
 
 <!-- 📊 Summary Section -->
 <div class="row mb-4">
-    <div class="col-md-6">
-        <div class="card shadow-sm">
-            <div class="card-body">
-                <h3 class="card-title">Summary</h3>
-                <p>Total Departments: <span class="badge bg-primary">@Model.TotalDepartments</span></p>
-                <p>Total Users: <span class="badge bg-success">@Model.TotalUsers</span></p>
+    <div class="col-md-6 col-lg-4">
+        <a asp-action="Index" asp-controller="Department" class="card-link">
+            <div class="card shadow-sm text-center">
+                <div class="card-body">
+                    <h4 class="card-title">Total Departments</h4>
+                    <p class="display-6 text-primary fw-bold">@Model.TotalDepartments</p>
+                </div>
             </div>
+        </a>
+    </div>
+
+    <div class="col-md-6 col-lg-4">
+        <a asp-action="Index" asp-controller="User" class="card-link">
+            <div class="card shadow-sm text-center">
+                <div class="card shadow-sm text-center">
+                    <div class="card-body">
+                        <h4 class="card-title">Total Users</h4>
+                        <p class="display-6 text-success fw-bold">@Model.TotalUsers</p>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+</div>
+
+<!-- 🔄 Departments & Users Side by Side -->
+<div class="row">
+    <!-- 🏢 Departments Section -->
+    <div class="col-md-6">
+        <h3>Departments</h3>
+        <div class="row">
+            @if (Model.Departments.Any())
+            {
+                var filteredDepartments = Model.Departments
+                .Where(d => string.IsNullOrEmpty(searchQuery) ||
+                (d.Name ?? string.Empty).Contains(searchQuery, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
+                @if (filteredDepartments.Any())
+                {
+                    @foreach (var department in filteredDepartments)
+                    {
+                        <div class="col-md-12 mb-3">
+                            <div class="card shadow-sm">
+                                <div class="card-body">
+                                    <h5 class="card-title">@department.Name</h5>
+                                    <p class="card-text">📞 Department Extension: @department.PhoneExtension</p>
+                                    <p class="card-text">👥 Users: <span class="badge bg-secondary">@department.Users.Count</span></p>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="col-12 text-center text-muted">
+                        <p>No departments available.</p>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+
+    <!-- 👥 Users Section -->
+    <div class="col-md-6">
+        <h3>Users</h3>
+        <div class="row">
+            @if (Model.Users.Any())
+            {
+                var filteredUsers = Model.Users
+                .Where(u => string.IsNullOrEmpty(searchQuery) ||
+                (u.FirstName ?? string.Empty).Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
+                (u.LastName ?? string.Empty).Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
+                (u.Department != null && (u.Department.Name ?? string.Empty).Contains(searchQuery, StringComparison.OrdinalIgnoreCase)))
+                .ToList();
+
+                @if (filteredUsers.Any())
+                {
+                    @foreach (var user in filteredUsers)
+                    {
+                        <div class="col-md-12 mb-3">
+                            <div class="card shadow-sm">
+                                <div class="card-body">
+                                    <h5 class="card-title">@user.FirstName @user.LastName</h5>
+                                    <p class="card-text">📧 @user.Email</p>
+                                    <p class="card-text">🏢 Department: @(user.Department?.Name ?? "No Department")</p>
+                                    <p class="card-text">📞 Direct Extension: @user.ExtensionNumber</p>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="col-12 text-center text-muted">
+                        <p>No users available.</p>
+                    </div>
+                }
+            }
         </div>
     </div>
 </div>
 
-<!-- 🏢 Departments Section -->
-<div class="mb-4">
-    <h3>Departments</h3>
-    <div class="table-responsive">
-        <table class="table table-striped">
-            <thead class="thead-dark">
-                <tr>
-                    <th>Name</th>
-                    <th>Phone Extension</th>
-                    <th>Number of Users</th>
-                </tr>
-            </thead>
-            <tbody>
-                @if (Model.Departments.Any())
-                {
-                    var filteredDepartments = Model.Departments
-                    .Where(d => string.IsNullOrEmpty(Context.Request.Query["searchQuery"]) ||
-                    d.Name.Contains(Context.Request.Query["searchQuery"], StringComparison.OrdinalIgnoreCase))
-                    .ToList();
+<!-- CSS to make the card clickable and remove link styling -->
+<style>
+    .card-link {
+        text-decoration: none;
+        color: inherit;
+    }
 
-                    if (filteredDepartments.Any())
-                    {
-                        @foreach (var department in filteredDepartments)
-                        {
-                            <tr>
-                                <td>@department.Name</td>
-                                <td>@department.PhoneExtension</td>
-                                <td><span class="badge bg-secondary">@department.Users.Count</span></td>
-                            </tr>
-                        }
-                    }
-                    else
-                    {
-                        <tr>
-                            <td colspan="3" class="text-center text-muted">No departments found.</td>
-                        </tr>
-                    }
-                }
-                else
-                {
-                    <tr>
-                        <td colspan="3" class="text-center text-muted">No departments available.</td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
-</div>
+        .card-link:hover .card {
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+        }
+</style>
 
-<!-- 👥 Users Section -->
-<div class="mb-4">
-    <h3>Users</h3>
-    <div class="table-responsive">
-        <table class="table table-striped">
-            <thead class="thead-dark">
-                <tr>
-                    <th>First Name</th>
-                    <th>Last Name</th>
-                    <th>Email</th>
-                    <th>Department</th>
-                    <th>Extension Number</th>
-                </tr>
-            </thead>
-            <tbody>
-                @if (Model.Users.Any())
-                {
-                    var filteredUsers = Model.Users
-                    .Where(u => string.IsNullOrEmpty(Context.Request.Query["searchQuery"]) ||
-                    u.FirstName.Contains(Context.Request.Query["searchQuery"], StringComparison.OrdinalIgnoreCase) ||
-                    u.LastName.Contains(Context.Request.Query["searchQuery"], StringComparison.OrdinalIgnoreCase) ||
-                    (u.Department != null && u.Department.Name.Contains(Context.Request.Query["searchQuery"], StringComparison.OrdinalIgnoreCase)))
-                    .ToList();
+<!-- Floating Button -->
+    To be implemeneted in admin view.
+<a asp-action="Create" asp-controller="Department" class="btn btn-success fab create-btn">
+    ➕ Create New Department
+</a>
 
-                    if (filteredUsers.Any())
-                    {
-                        @foreach (var user in filteredUsers)
-                        {
-                            <tr>
-                                <td>@user.FirstName</td>
-                                <td>@user.LastName</td>
-                                <td>@user.Email</td>
-                                <td>@(user.Department?.Name ?? "No Department")</td>
-                                <td>@user.ExtensionNumber</td>
-                            </tr>
-                        }
-                    }
-                    else
-                    {
-                        <tr>
-                            <td colspan="5" class="text-center text-muted">No users found.</td>
-                        </tr>
-                    }
-                }
-                else
-                {
-                    <tr>
-                        <td colspan="5" class="text-center text-muted">No users available.</td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
-</div>
+<a asp-action="Create" asp-controller="Department" class="btn btn-primary fab2">+Add User</a>
+
+<!-- Floating Back to Home Button -->
+<a asp-action="Index" asp-controller="Home" class="btn btn-primary fab back-btn">
+    🏠 Back to Home
+</a>
+
+<!-- CSS for Floating Buttons -->
+<style>
+    .fab {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 1000;
+        padding: 10px 20px;
+        border-radius: 50px;
+        box-shadow: 2px 2px 10px rgba(0,0,0,0.3);
+    }
+
+    .fab2 {
+        position: fixed;
+        bottom: 70px;
+        right: 20px;
+        z-index: 1000;
+        padding: 10px 20px;
+        border-radius: 50px;
+        box-shadow: 2px 2px 10px rgba(0,0,0,0.3);
+    }
+    /* Positioning for the buttons */
+    .fab:first-of-type {
+        bottom: 90px;
+    }
+    /* First button */
+    .fab2 {
+        bottom: 150px;
+    }
+    /* Second button */
+    .back-btn {
+        bottom: 20px;
+        background-color: #dc3545;
+        color: white;
+    }
+        /* Back button */
+
+        /* Hover effect */
+        .fab:hover, .back-btn:hover {
+            transform: scale(1.1);
+            opacity: 0.9;
+        }
+</style>

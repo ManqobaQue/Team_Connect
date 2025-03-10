@@ -11,45 +11,79 @@
     <input type="text" name="searchQuery" class="form-control d-inline-block w-auto" placeholder="Search Employees..."
            value="@Context.Request.Query["searchQuery"]" />
     <button type="submit" class="btn btn-primary">Search</button>
+
+    <!-- Create and Dashboard Buttons -->
+    <a asp-action="Create" class="btn btn-success ms-2">➕ Create Employee</a>
+    <a asp-action="Index" asp-controller="Dashboard" class="btn btn-primary ms-2">🏠 Dashboard</a>
 </form>
 
-<table class="table table-striped">
-    <thead class="thead-dark">
-        <tr>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>Email</th>
-            <th>Department</th>
-            <th>Extension</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @if (Model.Any())
+<!-- Responsive Grid Layout -->
+<div class="row">
+    @if (Model.Any())
+    {
+        @foreach (var user in Model)
         {
-            @foreach (var user in Model)
-            {
-                <tr>
-                    <td>@user.FirstName</td>
-                    <td>@user.LastName</td>
-                    <td>@user.Email</td>
-                    <td>@(user.Department != null ? user.Department.Name : "No Department")</td>
-                    <td>@user.ExtensionNumber</td>
-                    <td>
-                        <a asp-action="Details" asp-route-id="@user.Id" class="btn btn-info btn-sm">Details</a>
-                        <a asp-action="Edit" asp-route-id="@user.Id" class="btn btn-warning btn-sm">Edit</a>
-                        <a asp-action="Delete" asp-route-id="@user.Id" class="btn btn-danger btn-sm">Delete</a>
-                    </td>
-                </tr>
-            }
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">@user.FirstName @user.LastName</h5>
+                        <p class="card-text"><strong>Email:</strong> @user.Email</p>
+                        <p class="card-text"><strong>Department:</strong> @(user.Department != null ? user.Department.Name : "No Department")</p>
+                        <p class="card-text"><strong>Direct Extension:</strong> @user.ExtensionNumber</p>
+                        <div class="d-flex justify-content-between">
+                            <a asp-action="Details" asp-route-id="@user.Id" class="btn btn-info btn-sm">Details</a>
+                            <a asp-action="Edit" asp-route-id="@user.Id" class="btn btn-warning btn-sm">Edit</a>
+                            <a asp-action="Delete" asp-route-id="@user.Id" class="btn btn-danger btn-sm">Delete</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
         }
-        else
-        {
-            <tr>
-                <td colspan="6" class="text-center">No users found.</td>
-            </tr>
-        }
-    </tbody>
-</table>
+    }
+    else
+    {
+        <div class="col-12 text-center">
+            <p>No users found.</p>
+        </div>
+    }
+</div>
 
-<a asp-action="Create" class="btn btn-success">Create New User</a>
+@* <!-- Floating Create Button -->
+<a asp-action="Create" class="btn btn-success fab create-btn">
+    ➕ Create New Employee
+</a>
+
+<!-- Floating Back to Dashboard Button -->
+<a asp-action="Index" asp-controller="Dashboard" class="btn btn-primary fab back-btn">
+    🏠 Back to Dashboard
+</a> *@
+
+<!-- CSS for Floating Buttons -->
+<style>
+    .fab {
+        position: fixed;
+        right: 20px;
+        z-index: 1000;
+        padding: 12px 20px;
+        border-radius: 50px;
+        box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+        transition: all 0.3s ease-in-out;
+    }
+
+        .fab:hover {
+            transform: scale(1.1);
+        }
+
+    .create-btn {
+        bottom: 80px;
+        background-color: #28a745;
+        color: white;
+    }
+
+    .back-btn {
+        bottom: 20px;
+        background-color: #007bff;
+        color: white;
+    }
+</style>
+

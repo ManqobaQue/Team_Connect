@@ -4,13 +4,13 @@
       <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\CompanyPhonebook.8qlsbxwx7i.bundle.scp.css'))</AssetFile>
       <Selectors><![CDATA[[]]]></Selectors>
       <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"8qlsbxwx7i"},{"Name":"integrity","Value":"sha256-AKy0oyw6\u002BsYFRYeXXmBEr/1f1OXnK5XAB\u002BgEx3caSgA="},{"Name":"label","Value":"_content/CompanyPhonebook/CompanyPhonebook.bundle.scp.css"}]]]></EndpointProperties>
-      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"1134"},{"Name":"Content-Type","Value":"text/css"},{"Name":"ETag","Value":"\u0022AKy0oyw6\u002BsYFRYeXXmBEr/1f1OXnK5XAB\u002BgEx3caSgA=\u0022"},{"Name":"Last-Modified","Value":"Mon, 17 Feb 2025 18:41:26 GMT"}]]]></ResponseHeaders>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"1134"},{"Name":"Content-Type","Value":"text/css"},{"Name":"ETag","Value":"\u0022AKy0oyw6\u002BsYFRYeXXmBEr/1f1OXnK5XAB\u002BgEx3caSgA=\u0022"},{"Name":"Last-Modified","Value":"Sun, 09 Mar 2025 17:46:22 GMT"}]]]></ResponseHeaders>
     </StaticWebAssetEndpoint>
     <StaticWebAssetEndpoint Include="_content/CompanyPhonebook/CompanyPhonebook.bundle.scp.css">
       <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\CompanyPhonebook.8qlsbxwx7i.bundle.scp.css'))</AssetFile>
       <Selectors><![CDATA[[]]]></Selectors>
       <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-AKy0oyw6\u002BsYFRYeXXmBEr/1f1OXnK5XAB\u002BgEx3caSgA="}]]]></EndpointProperties>
-      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"1134"},{"Name":"Content-Type","Value":"text/css"},{"Name":"ETag","Value":"\u0022AKy0oyw6\u002BsYFRYeXXmBEr/1f1OXnK5XAB\u002BgEx3caSgA=\u0022"},{"Name":"Last-Modified","Value":"Mon, 17 Feb 2025 18:41:26 GMT"}]]]></ResponseHeaders>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"1134"},{"Name":"Content-Type","Value":"text/css"},{"Name":"ETag","Value":"\u0022AKy0oyw6\u002BsYFRYeXXmBEr/1f1OXnK5XAB\u002BgEx3caSgA=\u0022"},{"Name":"Last-Modified","Value":"Sun, 09 Mar 2025 17:46:22 GMT"}]]]></ResponseHeaders>
     </StaticWebAssetEndpoint>
     <StaticWebAssetEndpoint Include="_content/CompanyPhonebook/css/site.b9sayid5wm.css">
       <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\css\site.css'))</AssetFile>
