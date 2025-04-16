@@ -5,6 +5,8 @@ using CompanyPhonebook.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Runtime.CompilerServices;
 using Microsoft.AspNetCore.Authorization;
+using System.Text;
+using ClosedXML.Excel;
 
 namespace CompanyPhonebook.Controllers
 {
@@ -15,19 +17,48 @@ namespace CompanyPhonebook.Controllers
 
         //List & search all Users
         //Allow searching by FirstName, LastName, or Email.
-        public async Task<IActionResult> Index(String searchQuery)
+        public async Task<IActionResult> Index(string searchQuery, int page = 1)
         {
-            var users = _context.Users.Include(u => u.Department).AsQueryable();
+            int pageSize = 6; // Number of items per page
 
+            // Fetch all users and include related departments for displaying department names
+            var usersQuery = _context.Users.Include(u => u.Department).AsQueryable();
+
+            // Apply search filter if there is a search query
             if (!string.IsNullOrEmpty(searchQuery))
             {
-                users = users.Where(u => u.FirstName.Contains(searchQuery) ||
-                                         u.LastName.Contains(searchQuery) ||
-                                         u.Email.Contains(searchQuery));
+                usersQuery = usersQuery.Where(u => u.FirstName.Contains(searchQuery) ||
+                                                    u.LastName.Contains(searchQuery) ||
+                                                    u.Email.Contains(searchQuery));
             }
 
-            return View(await users.ToListAsync());
+            // Order users by last name for consistency
+            usersQuery = usersQuery.OrderBy(u => u.LastName);
+
+            // Get total number of users after applying search (needed for pagination)
+            var totalUsers = await usersQuery.CountAsync();
+
+            // Calculate total pages
+            var totalPages = (int)Math.Ceiling((double)totalUsers / pageSize);
+
+            // Fetch the users for the current page
+            var usersForCurrentPage = await usersQuery
+                .Skip((page - 1) * pageSize)  // Skip previous pages
+                .Take(pageSize)  // Take the required number of users
+                .ToListAsync();
+
+            // Prepare the ViewModel with pagination data
+            var viewModel = new UserViewModel
+            {
+                Users = usersForCurrentPage,
+                CurrentPage = page,
+                TotalPages = totalPages,
+                SearchQuery = searchQuery
+            };
+
+            return View(viewModel);
         }
+
 
         //Create User controller
         public IActionResult Create()
@@ -40,6 +71,7 @@ namespace CompanyPhonebook.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(User user)
         {
+            //rEMOVAL OF EXCLAMATION MARK ALLOWS APPLICATION TO CREATE USERS WITHOUT VALIDATION.
             if (!ModelState.IsValid)
             {
 
@@ -133,6 +165,7 @@ namespace CompanyPhonebook.Controllers
             return View(user);
         }
 
+        //Delete User controller
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -149,6 +182,57 @@ namespace CompanyPhonebook.Controllers
         private bool UserExists(int id)
         {
             return _context.Users.Any(e => e.Id == id);
+        }
+
+        //Export to CSV
+        public ActionResult ExportToCSV()
+        {
+            // Step 1: Fetch the employee data from the database
+            var employees = _context.Users.ToList(); // Example, adjust according to your data model
+
+            // Step 2: Prepare the CSV content
+            StringBuilder csvContent = new StringBuilder();
+            csvContent.AppendLine("FirstName,LastName,Email,Extension");
+
+            foreach (var employee in employees)
+            {
+                csvContent.AppendLine($"{employee.FirstName},{employee.LastName},{employee.Email},{employee.ExtensionNumber}");
+            }
+
+            // Step 3: Return the CSV file for download
+            byte[] fileBytes = Encoding.UTF8.GetBytes(csvContent.ToString());
+            return File(fileBytes, "text/csv", "EmployeeDirectory.csv");
+        }
+
+        //Export to Excel
+        public ActionResult ExportToExcel()
+        {
+            // Step 1: Fetch the employee data from the database
+            var employees = _context.Users.ToList(); // Example, adjust according to your data model
+            // Step 2: Prepare the Excel content
+            using (var workbook = new XLWorkbook())
+            {
+                var worksheet = workbook.Worksheets.Add("Employees");
+                worksheet.Cell("A1").Value = "FirstName";
+                worksheet.Cell("B1").Value = "LastName";
+                worksheet.Cell("C1").Value = "Extension Number";
+                //worksheet.Cell("D1").Value = "Email";
+                int row = 2;
+                foreach (var employee in employees)
+                {
+                    worksheet.Cell("A" + row).Value = employee.FirstName;
+                    worksheet.Cell("B" + row).Value = employee.LastName;
+                    worksheet.Cell("C" + row).Value = employee.ExtensionNumber;
+                    //worksheet.Cell("D" + row).Value = employee.Email;
+                    row++;
+                }
+                using (var stream = new MemoryStream())
+                {
+                    workbook.SaveAs(stream);
+                    var content = stream.ToArray();
+                    return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "EmployeeDirectory.xlsx");
+                }
+            }
         }
     }
 }

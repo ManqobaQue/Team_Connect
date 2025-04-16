@@ -1,0 +1,56 @@
+﻿@model AssignRoleViewModel
+
+@{
+    ViewData["Title"] = "Assign Role";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+
+            <h2 class="mb-4 text-center">Assign Role</h2>
+
+            <form method="post" class="card p-4 shadow-sm bg-light">
+                <div class="mb-3">
+                    <label asp-for="UserId" class="form-label">Select User</label>
+                    <select asp-for="UserId" class="form-select" required>
+                        <option value="">-- Select User --</option>
+                        @foreach (var user in Model.Users)
+                        {
+                            <option value="@user.Id">@user.FullName</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Role" class="form-label">Select Role</label>
+                    <select asp-for="Role" class="form-select" required>
+                        <option value="">-- Select Role --</option>
+                        @foreach (var role in Model.Roles)
+                        {
+                            <option value="@role.Name">@role.Name</option>
+                        }
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100">Assign Role</button>
+            </form>
+
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+                    @TempData["SuccessMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+                    @TempData["ErrorMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+        </div>
+    </div>
+</div>

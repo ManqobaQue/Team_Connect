@@ -1,18 +1,46 @@
 ﻿@model CompanyPhonebook.Models.DashboardViewModel
+
 @{
     ViewData["Title"] = "Dashboard";
     var searchQuery = Context.Request.Query["searchQuery"];
+    int pageSize = 3; // Items per page
+    int currentPage = string.IsNullOrEmpty(Context.Request.Query["page"]) ? 1 : int.Parse(Context.Request.Query["page"]);
+    int totalDepartments = Model.Departments.Count(d => string.IsNullOrEmpty(searchQuery) || (d.Name ?? string.Empty).Contains(searchQuery, StringComparison.OrdinalIgnoreCase));
+    int totalUsers = Model.Users.Count(u => string.IsNullOrEmpty(searchQuery) ||
+        (u.FirstName ?? string.Empty).Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
+        (u.LastName ?? string.Empty).Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
+        (u.Department != null && (u.Department.Name ?? string.Empty).Contains(searchQuery, StringComparison.OrdinalIgnoreCase)));
+    int totalPagesDepartments = (int)Math.Ceiling((double)totalDepartments / pageSize);
+    int totalPagesUsers = (int)Math.Ceiling((double)totalUsers / pageSize);
+
+    // Paginate the filtered departments and users
+    var filteredDepartments = Model.Departments
+        .Where(d => string.IsNullOrEmpty(searchQuery) || (d.Name ?? string.Empty).Contains(searchQuery, StringComparison.OrdinalIgnoreCase))
+        .Skip((currentPage - 1) * pageSize)
+        .Take(pageSize)
+        .ToList();
+
+    var filteredUsers = Model.Users
+        .Where(u => string.IsNullOrEmpty(searchQuery) ||
+                    (u.FirstName ?? string.Empty).Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
+                    (u.LastName ?? string.Empty).Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
+                    (u.Department != null && (u.Department.Name ?? string.Empty).Contains(searchQuery, StringComparison.OrdinalIgnoreCase)))
+        .Skip((currentPage - 1) * pageSize)
+        .Take(pageSize)
+        .ToList();
 }
 
-<h2 class="mb-4">Dashboard</h2>
+<h2 class="mb-4 text-center">Dashboard</h2>
 
-<!-- 🔍 Search Form -->
-<form asp-action="Index" method="get" class="mb-4">
-    <div class="input-group">
-        <input type="text" name="searchQuery" class="form-control" placeholder="Search Departments or Users..." value="@searchQuery" />
-        <button type="submit" class="btn btn-primary">Search</button>
-    </div>
-</form>
+<!-- 🔍 Search Form and Back to Home Button -->
+<div class="d-flex justify-content-between mb-4">
+    <form asp-action="Index" method="get" class="d-flex w-50 mx-auto">
+        <input type="text" name="searchQuery" class="form-control" placeholder="Search Departments or Employees..." value="@searchQuery" />
+        <button type="submit" class="btn btn-primary ms-2">Search</button>
+    </form>
+
+    <a asp-action="Index" asp-controller="Home" class="btn btn-secondary ms-2">🏠 Back to Home</a>
+</div>
 
 <!-- 📊 Summary Section -->
 <div class="row mb-4">
@@ -30,11 +58,9 @@
     <div class="col-md-6 col-lg-4">
         <a asp-action="Index" asp-controller="User" class="card-link">
             <div class="card shadow-sm text-center">
-                <div class="card shadow-sm text-center">
-                    <div class="card-body">
-                        <h4 class="card-title">Total Users</h4>
-                        <p class="display-6 text-success fw-bold">@Model.TotalUsers</p>
-                    </div>
+                <div class="card-body">
+                    <h4 class="card-title">Total Employees</h4>
+                    <p class="display-6 text-success fw-bold">@Model.TotalUsers</p>
                 </div>
             </div>
         </a>
@@ -47,143 +73,90 @@
     <div class="col-md-6">
         <h3>Departments</h3>
         <div class="row">
-            @if (Model.Departments.Any())
+            @if (filteredDepartments.Any())
             {
-                var filteredDepartments = Model.Departments
-                .Where(d => string.IsNullOrEmpty(searchQuery) ||
-                (d.Name ?? string.Empty).Contains(searchQuery, StringComparison.OrdinalIgnoreCase))
-                .ToList();
-
-                @if (filteredDepartments.Any())
+                @foreach (var department in filteredDepartments)
                 {
-                    @foreach (var department in filteredDepartments)
-                    {
-                        <div class="col-md-12 mb-3">
-                            <div class="card shadow-sm">
-                                <div class="card-body">
-                                    <h5 class="card-title">@department.Name</h5>
-                                    <p class="card-text">📞 Department Extension: @department.PhoneExtension</p>
-                                    <p class="card-text">👥 Users: <span class="badge bg-secondary">@department.Users.Count</span></p>
-                                </div>
+                    <div class="col-md-12 mb-3">
+                        <div class="card shadow-sm">
+                            <div class="card-body">
+                                <h5 class="card-title">@department.Name</h5>
+                                <p class="card-text">📞 Department Extension: @department.PhoneExtension</p>
+                                <p class="card-text">👥 Users: <span class="badge bg-secondary">@department.Users.Count</span></p>
                             </div>
                         </div>
-                    }
-                }
-                else
-                {
-                    <div class="col-12 text-center text-muted">
-                        <p>No departments available.</p>
                     </div>
                 }
             }
+            else
+            {
+                <div class="col-12 text-center text-muted">
+                    <p>No departments available.</p>
+                </div>
+            }
         </div>
+
+        <!-- Pagination Controls for Departments -->
+        <nav>
+            <ul class="pagination justify-content-center">
+                <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+                    <a class="page-link" href="?searchQuery=@searchQuery&page=@(currentPage - 1)" tabindex="-1">Previous</a>
+                </li>
+                <li class="page-item @(currentPage == totalPagesDepartments ? "disabled" : "")">
+                    <a class="page-link" href="?searchQuery=@searchQuery&page=@(currentPage + 1)">Next</a>
+                </li>
+            </ul>
+        </nav>
     </div>
 
     <!-- 👥 Users Section -->
     <div class="col-md-6">
         <h3>Users</h3>
         <div class="row">
-            @if (Model.Users.Any())
+            @if (filteredUsers.Any())
             {
-                var filteredUsers = Model.Users
-                .Where(u => string.IsNullOrEmpty(searchQuery) ||
-                (u.FirstName ?? string.Empty).Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
-                (u.LastName ?? string.Empty).Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
-                (u.Department != null && (u.Department.Name ?? string.Empty).Contains(searchQuery, StringComparison.OrdinalIgnoreCase)))
-                .ToList();
-
-                @if (filteredUsers.Any())
+                @foreach (var user in filteredUsers)
                 {
-                    @foreach (var user in filteredUsers)
-                    {
-                        <div class="col-md-12 mb-3">
-                            <div class="card shadow-sm">
-                                <div class="card-body">
-                                    <h5 class="card-title">@user.FirstName @user.LastName</h5>
-                                    <p class="card-text">📧 @user.Email</p>
-                                    <p class="card-text">🏢 Department: @(user.Department?.Name ?? "No Department")</p>
-                                    <p class="card-text">📞 Direct Extension: @user.ExtensionNumber</p>
-                                </div>
+                    <div class="col-md-12 mb-3">
+                        <div class="card shadow-sm">
+                            <div class="card-body">
+                                <h5 class="card-title">@user.FirstName @user.LastName</h5>
+                                <p class="card-text">📧 @user.Email</p>
+                                <p class="card-text">🏢 Department: @(user.Department?.Name ?? "No Department")</p>
+                                <p class="card-text">📞 Direct Extension: @user.ExtensionNumber</p>
                             </div>
                         </div>
-                    }
-                }
-                else
-                {
-                    <div class="col-12 text-center text-muted">
-                        <p>No users available.</p>
                     </div>
                 }
             }
+            else
+            {
+                <div class="col-12 text-center text-muted">
+                    <p>No users available.</p>
+                </div>
+            }
         </div>
+
+        <!-- Pagination Controls for Users -->
+        <nav>
+            <ul class="pagination justify-content-center">
+                <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+                    <a class="page-link" href="?searchQuery=@searchQuery&page=@(currentPage - 1)" tabindex="-1">Previous</a>
+                </li>
+                <li class="page-item @(currentPage == totalPagesUsers ? "disabled" : "")">
+                    <a class="page-link" href="?searchQuery=@searchQuery&page=@(currentPage + 1)">Next</a>
+                </li>
+            </ul>
+        </nav>
     </div>
 </div>
 
-<!-- CSS to make the card clickable and remove link styling -->
-<style>
-    .card-link {
-        text-decoration: none;
-        color: inherit;
-    }
+<!-- Floating Buttons for Admins -->
+@if (User.IsInRole("Admin"))
+{
+    <a asp-action="Create" asp-controller="Department" class="btn btn-success fab create-btn">
+        ➕ Create New Department
+    </a>
 
-        .card-link:hover .card {
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-        }
-</style>
-
-<!-- Floating Button -->
-    To be implemeneted in admin view.
-<a asp-action="Create" asp-controller="Department" class="btn btn-success fab create-btn">
-    ➕ Create New Department
-</a>
-
-<a asp-action="Create" asp-controller="Department" class="btn btn-primary fab2">+Add User</a>
-
-<!-- Floating Back to Home Button -->
-<a asp-action="Index" asp-controller="Home" class="btn btn-primary fab back-btn">
-    🏠 Back to Home
-</a>
-
-<!-- CSS for Floating Buttons -->
-<style>
-    .fab {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        z-index: 1000;
-        padding: 10px 20px;
-        border-radius: 50px;
-        box-shadow: 2px 2px 10px rgba(0,0,0,0.3);
-    }
-
-    .fab2 {
-        position: fixed;
-        bottom: 70px;
-        right: 20px;
-        z-index: 1000;
-        padding: 10px 20px;
-        border-radius: 50px;
-        box-shadow: 2px 2px 10px rgba(0,0,0,0.3);
-    }
-    /* Positioning for the buttons */
-    .fab:first-of-type {
-        bottom: 90px;
-    }
-    /* First button */
-    .fab2 {
-        bottom: 150px;
-    }
-    /* Second button */
-    .back-btn {
-        bottom: 20px;
-        background-color: #dc3545;
-        color: white;
-    }
-        /* Back button */
-
-        /* Hover effect */
-        .fab:hover, .back-btn:hover {
-            transform: scale(1.1);
-            opacity: 0.9;
-        }
-</style>
+    <a asp-action="Create" asp-controller="User" class="btn btn-primary fab2">➕ Add User</a>
+}
