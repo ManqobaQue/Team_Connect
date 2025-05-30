@@ -7,13 +7,15 @@ using CompanyPhonebook.Data;
 
 
 namespace CompanyPhonebook.Controllers
-{ 
-    
-   // [Authorize(Roles ="Admin")]
+{
+
+    //[Authorize(Roles ="Admin")]
     public class RoleController(
+
         UserManager<IdentityUser> userManager,
         RoleManager<IdentityRole> roleManager,
         PhonebookContext context) : Controller
+
     {
         [HttpGet]
         public async Task<IActionResult> AssignRole()
@@ -21,10 +23,9 @@ namespace CompanyPhonebook.Controllers
             var roles = await roleManager.Roles.ToListAsync();
             var users = await context.Users.ToListAsync(); //fetching users from uiser table DB
 
-
             var model = new AssignRoleViewModel
             {
-                UserId = string.Empty, // or set a default value
+                Id = string.Empty, // or set a default value
                 Role = string.Empty, // or set a default value
                 Users = users, //Passing Users to the view
                 Roles = roles
@@ -43,14 +44,16 @@ namespace CompanyPhonebook.Controllers
                 var errors = ModelState.Values.SelectMany(v => v.Errors)
                                                .Select(e => e.ErrorMessage);
                 TempData["ErrorMessage"] = $"Invalid data entered: {string.Join(", ", errors)}";
-                return View();
+                model.Users = await context.Users.ToListAsync();
+                model.Roles = await roleManager.Roles.ToListAsync();
+                return View(model);
             }
 
-            var user = await userManager.FindByIdAsync(model.UserId);
+            var user = await userManager.FindByIdAsync(model.Id);
             if (user == null)
             {
                 TempData["ErrorMessage"] = "User not found.";
-                return View();
+                return View(model);
             }
 
             var result = await userManager.AddToRoleAsync(user, model.Role);
@@ -66,4 +69,5 @@ namespace CompanyPhonebook.Controllers
             return RedirectToAction(nameof(AssignRole));
         }
     }
-    }
+}
+    

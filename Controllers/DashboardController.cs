@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace CompanyPhonebook.Controllers
 {
-    [Authorize]
+    //[Authorize]
     public class DashboardController : Controller
     {
         private readonly PhonebookContext _context;

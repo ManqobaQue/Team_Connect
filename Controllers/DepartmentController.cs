@@ -8,7 +8,7 @@ using ClosedXML.Excel;
 
 namespace CompanyPhonebook.Controllers
 {
-    [Authorize]
+   //[Authorize]
     public class DepartmentController(PhonebookContext context) : Controller
     {
         private readonly PhonebookContext _context = context;
@@ -174,7 +174,7 @@ namespace CompanyPhonebook.Controllers
             var employees = _context.Users.ToList(); // Example, adjust according to your data model
 
             // Step 2: Prepare the CSV content
-            StringBuilder csvContent = new StringBuilder();
+            StringBuilder csvContent = new();
             csvContent.AppendLine("FirstName,LastName,Email,Extension");
 
             foreach (var employee in employees)

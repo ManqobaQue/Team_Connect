@@ -10,7 +10,7 @@ using ClosedXML.Excel;
 
 namespace CompanyPhonebook.Controllers
 {
-    [Authorize]
+    //[Authorize]
     public class UserController(PhonebookContext context) : Controller
     {
         private readonly PhonebookContext _context = context;
@@ -125,7 +125,7 @@ namespace CompanyPhonebook.Controllers
                 catch (Exception ex)
                 {
                     // Add user-friendly error handling
-                    ModelState.AddModelError("", "Error updating user: " + ex.Message);
+                    ModelState.AddModelError("", $"Error updating user: {ex.Message}");
                 }
 
                 return RedirectToAction(nameof(Index));

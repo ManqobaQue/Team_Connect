@@ -1,0 +1,77 @@
+﻿@section Styles {
+    <style >
+    body {
+        background: url('https://betsoftware.com/images/home/SectionTech.png') no-repeat center center fixed;
+        background-size: cover;
+        font-family: 'Gotham', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        padding: 0;
+        color: #fff;
+    }
+
+    .hero-section {
+        background: #ffffffcc; /* semi-transparent white overlay */
+        border-radius: 15px;
+        box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+        padding: 3rem;
+        transition: transform 0.3s ease;
+    }
+
+        .hero-section:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+        }
+
+    .btn-hover:hover {
+        background-color: #0069d9 !important;
+        color: #fff !important;
+        box-shadow: 0 4px 12px rgba(0, 105, 217, 0.6);
+        transition: all 0.3s ease;
+    }
+
+    .feature-icon {
+        transition: transform 0.3s ease;
+    }
+
+        .feature-icon:hover {
+            transform: scale(1.2);
+            color: #0d6efd;
+        }
+
+    .welcome-heart {
+        font-size: 2rem;
+        color: #ff4d6d;
+        animation: pulse 2s infinite;
+        display: inline-block;
+        vertical-align: middle;
+        margin-left: 0.5rem;
+    }
+
+    @keyframes pulse {
+        0%, 100% {
+            transform: scale(1);
+        }
+
+        50% {
+            transform: scale(1.3);
+        }
+    }
+    /* Custom white text override for sections */
+    .text-white-section {
+        color: white !important;
+    }
+
+        .text-white-section .blockquote-footer {
+            color: rgba(255, 255, 255, 0.6) !important;
+        }
+
+        .text-white-section p,
+        .text-white-section h3,
+        .text-white-section h5 {
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); /* optional for readability */
+        }
+}
+
+    </style>
+}

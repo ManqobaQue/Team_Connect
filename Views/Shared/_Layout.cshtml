@@ -7,14 +7,19 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/CompanyPhonebook.styles.css" asp-append-version="true" />
+
+    @RenderSection("Styles", required: false)
 </head>
-<body>
+<body style="background: url('https://betsoftware.com/images/home/SectionTech.png') no-repeat center center fixed; background-size: cover;">
+
     <header>
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow">
             <div class="container-fluid">
-                <a class="navbar-brand fw-bold text-primary" asp-area="" asp-controller="Home" asp-action="Index">
-                    <i class="bi bi-telephone"></i> Team Connect
+                <a class="navbar-brand d-flex align-items-center" asp-area="" asp-controller="Home" asp-action="Index">
+                    <img src="https://betsoftware.com/images/logo.png" alt="Company Logo" height="40" class="me-2">
+                    <span class="fw-bold text-primary">Team Connect</span>
                 </a>
+
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>

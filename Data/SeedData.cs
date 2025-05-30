@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using CompanyPhonebook.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
@@ -13,6 +14,14 @@ namespace CompanyPhonebook.Data
             // Get required services
             var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
             var userManager = serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
+            await SetRoles(logger, roleManager);
+
+            await SetUser(logger, userManager);
+
+        }
+
+        private static async Task SetRoles(ILogger<SeedData> logger, RoleManager<IdentityRole> roleManager)
+        {
 
             // Define roles to create
             string[] roleNames = { "Admin", "User" };
@@ -35,11 +44,11 @@ namespace CompanyPhonebook.Data
                         roleResult = await roleManager.CreateAsync(new IdentityRole(roleName));
                         if (roleResult.Succeeded)
                         {
-                            logger.LogInformation($"Role '{roleName}' created successfully.");
+                            logger.LogInformation("Role '{RoleName}' created successfully.", roleName); //remove $ sign
                         }
                         else
                         {
-                            logger.LogError($"Error creating role '{roleName}': {string.Join(", ", roleResult.Errors)}");
+                            logger.LogWarning("Error creating role '{RoleName}': ", string.Join(", ", roleResult.Errors));
                         }
                     }
                 }
@@ -48,16 +57,23 @@ namespace CompanyPhonebook.Data
                     logger.LogError(ex, "Error creating role: {RoleName}", roleName);
                 }
             }
+        }
 
+        private static async Task SetUser(ILogger<SeedData> logger, UserManager<IdentityUser> userManager)
+        {
             // Optional: Seed an admin user
             var adminUser = await userManager.FindByEmailAsync("admin@admin.com");
 
             try
             {
-                if (adminUser == null)
+                if (adminUser != null)
+                {
+                    logger.LogInformation("Admin user already exists.");
+                }
+                else
                 {
                     // Create an admin user if it doesn't exist
-                    var user = new IdentityUser
+                    var user = new ApplicationUser
                     {
                         UserName = "admin@admin.com",
                         Email = "admin@admin.com",
@@ -81,17 +97,11 @@ namespace CompanyPhonebook.Data
                         logger.LogError($"Error creating admin user: {string.Join(", ", result.Errors)}");
                     }
                 }
-                else
-                {
-                    logger.LogInformation("Admin user already exists.");
-                }
             }
             catch (Exception ex)
             {
                 logger.LogError($"Error creating admin user: {ex.Message}");
             }
-
-
         }
     }
 }

@@ -3,22 +3,15 @@ using Microsoft.AspNetCore.Mvc;
 using CompanyPhonebook.Models;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
 
 namespace CompanyPhonebook.Controllers
 {
-    public class AccountController : Controller
+    public class AccountController(
+        UserManager<ApplicationUser> userManager,
+        SignInManager<ApplicationUser> signInManager,
+        ILogger<AccountController> logger) : Controller
     {
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly SignInManager<IdentityUser> _signInManager;
-        private readonly ILogger<AccountController> _logger;
-
-        public AccountController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, ILogger<AccountController> logger)
-        {
-            _userManager = userManager;
-            _signInManager = signInManager;
-            _logger = logger;
-        }
-
         [HttpGet]
         public IActionResult Login(string? returnUrl = null)
         {
@@ -34,9 +27,9 @@ namespace CompanyPhonebook.Controllers
 
             if (ModelState.IsValid)
             {
-                _logger.LogInformation("Attempting to log in user: {Email}", model.Email);
+                logger.LogInformation("Attempting to log in user: {Email}", model.Email);
 
-                var result = await _signInManager.PasswordSignInAsync(
+                var result = await signInManager.PasswordSignInAsync(
                     model.Email,
                     model.Password,
                     model.RememberMe,
@@ -44,33 +37,35 @@ namespace CompanyPhonebook.Controllers
 
                 if (result.Succeeded)
                 {
-                    _logger.LogInformation("User {Email} logged in successfully.", model.Email);
+                    logger.LogInformation("User {Email} logged in successfully.", model.Email);
                     return LocalRedirect(returnUrl ?? Url.Content("~/"));
                 }
-
+            
                 if (result.IsLockedOut)
                 {
-                    _logger.LogWarning("User {Email} account locked out.", model.Email);
+                    logger.LogWarning("User {Email} account locked out.", model.Email);
                     ModelState.AddModelError(string.Empty, "Account locked out. Please try again later.");
                     return View(model);
                 }
 
-                _logger.LogWarning("Invalid login attempt for user {Email}.", model.Email);
+                logger.LogWarning("Invalid login attempt for user {Email}.", model.Email);
                 ModelState.AddModelError(string.Empty, "Incorrect login Credentials.");
                 return View(model);
             }
 
             // If we got this far, something failed, redisplay form
-            _logger.LogWarning("Model state invalid for user {Email}.", model.Email);
+            logger.LogWarning("Model state invalid for user {Email}.", model.Email);
             return View(model);
-        }
+        } 
 
+        
+       
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
         {
-            await _signInManager.SignOutAsync();
-            _logger.LogInformation("User logged out.");
+            await signInManager.SignOutAsync();
+            logger.LogInformation("User logged out.");
             return RedirectToAction("Index", "Home");
         }
     }

@@ -1,10 +1,10 @@
 ﻿@model CompanyPhonebook.Models.UserViewModel
 
 @{
-    ViewData["Title"] = "Employees";
+    ViewData["Title"] = "EMPLOYEES";
 }
-
-<h1 class="display-4">Employees</h1>
+<div class="container mt-5 p-4 rounded shadow" style="background-color: #003366; color: white;">
+    <h1 class="display-4 text-white">EMPLOYEES</h1>
 
 <!-- 🔍 Search Form -->
 <form asp-action="Index" method="get" class="mb-3">
@@ -21,13 +21,6 @@
     }
     <a asp-action="Index" asp-controller="Dashboard" class="btn btn-primary ms-2">🏠 Dashboard</a>
 </form>
-
-@* <!-- Export buttons -->
-<div class="mb-3">
-    <a href="@Url.Action("ExportToCSV", "User")" class="btn btn-primary me-2">Export to CSV</a>
-    <a href="@Url.Action("ExportToExcel", "User")" class="btn btn-success">Export to Excel</a>
-</div> *@
-
 <!-- Export buttons (Grouped) -->
 <div class="mb-3">
     <div class="btn-group" role="group" aria-label="Export Options">
