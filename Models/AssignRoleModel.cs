@@ -6,9 +6,7 @@ namespace CompanyPhonebook.Models
     {
         public required string Id { get; set; } = string.Empty;
         public required string Role { get; set; } = string.Empty;
-        public required List<IdentityRole> Roles { get; set; } = [];
-        public required List<User> Users { get; set; } = []; //To store users
-
+        public required List<IdentityRole> Roles { get; set; } = new List<IdentityRole>();
+        public required List<User> Users { get; set; } = new List<User>(); //To store users
     }
 }
-

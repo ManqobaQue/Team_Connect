@@ -6,7 +6,7 @@
 
 <!-- Page Wrapper with Background -->
 <div class="container mt-5 p-4 rounded shadow" style="background-color: #003366; color: white;">
-    <h1 class="display-4">DEPARTMENTS</h1>
+    <h1 class="display-4" style="font-weight: bold;">Departments</h1>
 
     <!-- 🔍 Search Form -->
     <form asp-action="Index" method="get" class="mb-3">
@@ -24,6 +24,8 @@
         <a asp-action="Index" asp-controller="Dashboard" class="btn btn-primary ms-2">🏠 Dashboard</a>
     </form>
 
+    @if (User.IsInRole("Admin"))
+    {
     <!-- Export buttons -->
     <div class="mb-3">
         <div class="btn-group" role="group" aria-label="Export Options">
@@ -31,7 +33,8 @@
             <a href="@Url.Action("ExportToExcel", "Department")" class="btn btn-success">Export to Excel</a>
         </div>
     </div>
-
+    }
+   
     <!-- 📋 Departments Card Grid -->
     <div class="row">
         @if (Model.Departments.Any())

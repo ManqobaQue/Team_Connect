@@ -71,14 +71,35 @@ namespace CompanyPhonebook.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(User user)
         {
-            //rEMOVAL OF EXCLAMATION MARK ALLOWS APPLICATION TO CREATE USERS WITHOUT VALIDATION.
-            if (!ModelState.IsValid)
-            {
+            // Normalize phone extension
+            var phoneExtension = user.ExtensionNumber?.Trim();
 
+            // Check for duplicate extension
+            bool extensionExists = await _context.Users
+                .AnyAsync(u => u.ExtensionNumber == phoneExtension);
+
+            if (extensionExists)
+            {
+                ModelState.AddModelError("PhoneExtension", "This phone extension is already assigned to another user.");
+            }
+
+
+            // Check if email already exists
+            bool emailExists = await _context.Users
+                .AnyAsync(u => u.Email.ToLower() == user.Email.ToLower());
+
+            if (emailExists)
+            {
+                ModelState.AddModelError("Email", "A user with this email already exists.");
+            }
+
+            if (ModelState.IsValid)
+            {
                 _context.Add(user);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+
             ViewData["DepartmentId"] = new SelectList(_context.Departments, "Id", "Name", user.DepartmentId);
             return View(user);
         }
@@ -191,7 +212,7 @@ namespace CompanyPhonebook.Controllers
             var employees = _context.Users.ToList(); // Example, adjust according to your data model
 
             // Step 2: Prepare the CSV content
-            StringBuilder csvContent = new StringBuilder();
+            StringBuilder csvContent = new();
             csvContent.AppendLine("FirstName,LastName,Email,Extension");
 
             foreach (var employee in employees)

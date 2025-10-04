@@ -2,10 +2,8 @@
 
 namespace CompanyPhonebook.Models;
 
-public class ApplicationUser:IdentityUser
+public class ApplicationUser : IdentityUser
 {
-    public string UserName { get; set; } = string.Empty;
-    public string Email { get; set; } = string.Empty;
-    //User status / date
-
+    public override string? UserName { get; set; } = string.Empty;
+    public override string? Email { get; set; } = string.Empty;
 }

@@ -10,18 +10,23 @@ namespace CompanyPhonebook.Controllers
 {
 
     //[Authorize(Roles ="Admin")]
-    public class RoleController(
-
-        UserManager<IdentityUser> userManager,
-        RoleManager<IdentityRole> roleManager,
-        PhonebookContext context) : Controller
-
+    public class RoleController : Controller
     {
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly PhonebookContext _context;
+
+        public RoleController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, PhonebookContext context)
+        {
+            _userManager = userManager;
+            _roleManager = roleManager;
+            _context = context;
+        }
         [HttpGet]
         public async Task<IActionResult> AssignRole()
         {
-            var roles = await roleManager.Roles.ToListAsync();
-            var users = await context.Users.ToListAsync(); //fetching users from uiser table DB
+            var roles = await _roleManager.Roles.ToListAsync();
+            var users = await _context.Users.ToListAsync(); //fetching users from uiser table DB
 
             var model = new AssignRoleViewModel
             {
@@ -44,19 +49,26 @@ namespace CompanyPhonebook.Controllers
                 var errors = ModelState.Values.SelectMany(v => v.Errors)
                                                .Select(e => e.ErrorMessage);
                 TempData["ErrorMessage"] = $"Invalid data entered: {string.Join(", ", errors)}";
-                model.Users = await context.Users.ToListAsync();
-                model.Roles = await roleManager.Roles.ToListAsync();
+                model.Users = await _context.Users.ToListAsync();
+                model.Roles = await _roleManager.Roles.ToListAsync();
                 return View(model);
             }
 
-            var user = await userManager.FindByIdAsync(model.Id);
+            var user = await _userManager.FindByIdAsync(model.Id);
             if (user == null)
             {
                 TempData["ErrorMessage"] = "User not found.";
-                return View(model);
+                return RedirectToAction(nameof(AssignRole));
             }
 
-            var result = await userManager.AddToRoleAsync(user, model.Role);
+            if (await _userManager.IsInRoleAsync(user, model.Role))
+            {
+                TempData["InfoMessage"] = $"User '{user.UserName}' already has the role '{model.Role}'.";
+                return RedirectToAction(nameof(AssignRole));
+             }
+
+
+            var result = await _userManager.AddToRoleAsync(user, model.Role);
             if (result.Succeeded)
             {
                 TempData["SuccessMessage"] = $"Role '{model.Role}' assigned to user successfully.";

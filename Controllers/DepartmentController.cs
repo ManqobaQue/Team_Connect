@@ -8,7 +8,7 @@ using ClosedXML.Excel;
 
 namespace CompanyPhonebook.Controllers
 {
-   //[Authorize]
+  // [Authorize]
     public class DepartmentController(PhonebookContext context) : Controller
     {
         private readonly PhonebookContext _context = context;
@@ -194,25 +194,23 @@ namespace CompanyPhonebook.Controllers
             var departments = _context.Departments.ToList(); // Example, adjust according to your data model
 
             // Step 2: Prepare the Excel content
-            using (var workbook = new XLWorkbook())
-            {
-                var worksheet = workbook.Worksheets.Add("Departments");
-                worksheet.Cell("A1").Value = "Department Name";
-                worksheet.Cell("B1").Value = "Extension Number";
+            using var workbook = new XLWorkbook();
+            var worksheet = workbook.Worksheets.Add("Departments");
+            worksheet.Cell("A1").Value = "Department Name";
+            worksheet.Cell("B1").Value = "Extension Number";
 
-                int row = 2;
-                foreach (var department in departments)
-                {
-                    worksheet.Cell("A" + row).Value = department.Name;
-                    worksheet.Cell("B" + row).Value = department.PhoneExtension;
-                    row++;
-                }
-                using (var stream = new MemoryStream())
-                {
-                    workbook.SaveAs(stream);
-                    var content = stream.ToArray();
-                    return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "DepartmentDirectory.xlsx");
-                }
+            int row = 2;
+            foreach (var department in departments)
+            {
+                worksheet.Cell("A" + row).Value = department.Name;
+                worksheet.Cell("B" + row).Value = department.PhoneExtension;
+                row++;
+            }
+            using (var stream = new MemoryStream())
+            {
+                workbook.SaveAs(stream);
+                var content = stream.ToArray();
+                return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "DepartmentDirectory.xlsx");
             }
         }
     }

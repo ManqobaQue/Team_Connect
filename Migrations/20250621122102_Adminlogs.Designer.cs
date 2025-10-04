@@ -4,6 +4,7 @@ using CompanyPhonebook.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CompanyPhonebook.Migrations
 {
     [DbContext(typeof(PhonebookContext))]
-    partial class PhonebookContextModelSnapshot : ModelSnapshot
+    [Migration("20250621122102_Adminlogs")]
+    partial class Adminlogs
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -140,26 +143,6 @@ namespace CompanyPhonebook.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Departments");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "Human Resources",
-                            PhoneExtension = "10001"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "IT Department",
-                            PhoneExtension = "10002"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Name = "Finance",
-                            PhoneExtension = "10003"
-                        });
                 });
 
             modelBuilder.Entity("CompanyPhonebook.Models.User", b =>
@@ -179,7 +162,8 @@ namespace CompanyPhonebook.Migrations
 
                     b.Property<string>("ExtensionNumber")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
@@ -196,26 +180,6 @@ namespace CompanyPhonebook.Migrations
                     b.HasIndex("DepartmentId");
 
                     b.ToTable("Users");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            DepartmentId = 1,
-                            Email = "alice.smith@company.com",
-                            ExtensionNumber = "20001",
-                            FirstName = "Alice",
-                            LastName = "Smith"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            DepartmentId = 2,
-                            Email = "bob.johnson@company.com",
-                            ExtensionNumber = "20002",
-                            FirstName = "Bob",
-                            LastName = "Johnson"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

@@ -1,0 +1,33 @@
+﻿@model IEnumerable<CompanyPhonebook.Models.AdminLog>
+
+@{
+    ViewData["Title"] = "Admin Logs";
+}
+
+<div class="container mt-5 p-4 rounded shadow" style="background-color: #003366; color: white;">
+
+    <h2 class ="mb-4 text-center">Admin Logs</h2>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Username</th>
+            <th>Controller</th>
+            <th>Action</th>
+            <th>IP Address</th>
+            <th>Timestamp (SAST)</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var log in Model)
+        {
+            <tr>
+                <td>@log.Adminusername</td>
+                <td>@log.ControllerName</td>
+                <td>@log.ActionName</td>
+                <td>@log.IPAdress</td>
+                <td>@log.TimeStamp.ToString("yyyy-MM-dd HH:mm:ss")</td>
+            </tr>
+        }
+    </tbody>
+</table>

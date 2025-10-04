@@ -8,7 +8,7 @@ using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pag
 namespace CompanyPhonebook.Controllers
 {
     public class AccountController(
-        UserManager<ApplicationUser> userManager,
+        //UserManager<ApplicationUser> userManager,
         SignInManager<ApplicationUser> signInManager,
         ILogger<AccountController> logger) : Controller
     {

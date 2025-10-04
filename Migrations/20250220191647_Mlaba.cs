@@ -10,8 +10,8 @@ namespace CompanyPhonebook.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "Contacts");
+            //migrationBuilder.DropTable(
+            //    name: "Contacts");
         }
 
         /// <inheritdoc />

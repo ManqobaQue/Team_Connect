@@ -29,9 +29,8 @@ namespace CompanyPhonebook.Models
         [ForeignKey("DepartmentId")]
         public Department Department { get; set; } = null!;
 
-        [Required]
-        [StringLength(20)]
-        [RegularExpression(@"^\d{4}$", ErrorMessage = "Extension must be exactly 4 digits.")]
+        [Required(ErrorMessage = "Extension number is required.")]
+        [RegularExpression(@"^\d{5}$", ErrorMessage = "Extension must be exactly 5 digits.")]
         public string ExtensionNumber { get; set; } = string.Empty;
 
         [NotMapped]
