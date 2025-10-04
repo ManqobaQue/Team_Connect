@@ -12,6 +12,8 @@ namespace CompanyPhonebook.Controllers
             _context = context;
         }
 
+
+        // display admin logs - need to check on adminlogs data -  2025/10/04
         //public IActionResult Index()
         //{
         //    var logs = _context.AdminLogs
