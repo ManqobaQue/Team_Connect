@@ -14,9 +14,11 @@ namespace CompanyPhonebook.Data
 
     public DbSet<User> Users { get; set; }
     public DbSet<Department> Departments { get; set; }
-    
 
-          protected override void OnModelCreating(ModelBuilder modelBuilder)
+    public DbSet<AdminLog> AdminLogs { get; set; }
+
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
 
         {
 
